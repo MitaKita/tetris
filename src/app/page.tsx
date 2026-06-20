@@ -156,11 +156,16 @@ function scoreForLines(lines: number): number {
 
 export default function Home() {
   const [board, setBoard] = useState<Board>(createEmptyBoard)
-  const [piece, setPiece] = useState<Piece>(randomPiece)
+  const [piece, setPiece] = useState<Piece | null>(null)
   const [score, setScore] = useState(0)
   const [lines, setLines] = useState(0)
   const [isRunning, setIsRunning] = useState(true)
   const [isGameOver, setIsGameOver] = useState(false)
+
+  useEffect(() => {
+    // Create the first random piece only on the client to avoid SSR hydration mismatch.
+    setPiece(randomPiece())
+  }, [])
 
   const restart = useCallback(() => {
     const freshBoard = createEmptyBoard()
@@ -201,33 +206,33 @@ export default function Home() {
 
   const moveHorizontally = useCallback(
     (dx: number) => {
-      if (!isRunning || isGameOver) return
+      if (!isRunning || isGameOver || !piece) return
       if (!collides(board, piece, dx, 0)) {
-        setPiece((prev) => ({ ...prev, x: prev.x + dx }))
+        setPiece({ ...piece, x: piece.x + dx })
       }
     },
     [board, isGameOver, isRunning, piece],
   )
 
   const dropOneRow = useCallback(() => {
-    if (!isRunning || isGameOver) return
+    if (!isRunning || isGameOver || !piece) return
     if (!collides(board, piece, 0, 1)) {
-      setPiece((prev) => ({ ...prev, y: prev.y + 1 }))
+      setPiece({ ...piece, y: piece.y + 1 })
       return
     }
     lockAndContinue(piece)
   }, [board, isGameOver, isRunning, lockAndContinue, piece])
 
   const rotate = useCallback(() => {
-    if (!isRunning || isGameOver) return
+    if (!isRunning || isGameOver || !piece) return
     const rotated = rotateClockwise(piece.shape)
     if (!collides(board, piece, 0, 0, rotated)) {
-      setPiece((prev) => ({ ...prev, shape: rotated }))
+      setPiece({ ...piece, shape: rotated })
     }
   }, [board, isGameOver, isRunning, piece])
 
   const hardDrop = useCallback(() => {
-    if (!isRunning || isGameOver) return
+    if (!isRunning || isGameOver || !piece) return
     let nextY = piece.y
     while (!collides(board, piece, 0, nextY - piece.y + 1)) {
       nextY += 1
@@ -237,12 +242,12 @@ export default function Home() {
   }, [board, isGameOver, isRunning, lockAndContinue, piece])
 
   useEffect(() => {
-    if (!isRunning || isGameOver) return
+    if (!isRunning || isGameOver || !piece) return
     const interval = setInterval(() => {
       dropOneRow()
     }, TICK_MS)
     return () => clearInterval(interval)
-  }, [dropOneRow, isGameOver, isRunning])
+  }, [dropOneRow, isGameOver, isRunning, piece])
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -270,6 +275,9 @@ export default function Home() {
 
   const boardWithPiece = useMemo(() => {
     const boardCopy = board.map((row) => [...row])
+    if (!piece) {
+      return boardCopy
+    }
     piece.shape.forEach((row, py) => {
       row.forEach((cell, px) => {
         if (!cell) return
