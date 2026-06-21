@@ -7,6 +7,7 @@ import {
   clearLines,
   rotateClockwise,
   scoreForLines,
+  getHardDropY,
   boardWithActivePiece,
 } from "./logic"
 import { BOARD_WIDTH, BOARD_HEIGHT, TETROMINOES } from "./constants"
@@ -432,6 +433,34 @@ describe("Tetris Logic", () => {
 
     it("returns 0 for negative lines", () => {
       expect(scoreForLines(-1)).toBe(0)
+    })
+  })
+
+  describe("getHardDropY", () => {
+    it("returns the floor landing row on an empty board", () => {
+      const board = createEmptyBoard()
+      const piece: Piece = {
+        shape: [[1]],
+        x: 4,
+        y: 0,
+        color: 1,
+      }
+
+      expect(getHardDropY(board, piece)).toBe(BOARD_HEIGHT - 1)
+    })
+
+    it("returns the first row above stacked cells", () => {
+      const board = createEmptyBoard()
+      board[BOARD_HEIGHT - 1][4] = 2
+      board[BOARD_HEIGHT - 2][4] = 2
+      const piece: Piece = {
+        shape: [[1]],
+        x: 4,
+        y: 0,
+        color: 1,
+      }
+
+      expect(getHardDropY(board, piece)).toBe(BOARD_HEIGHT - 3)
     })
   })
 

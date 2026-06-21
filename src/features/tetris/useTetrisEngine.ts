@@ -5,6 +5,7 @@ import {
   clearLines,
   collides,
   createEmptyBoard,
+  getHardDropY,
   mergePiece,
   randomPiece,
   rotateClockwise,
@@ -111,10 +112,7 @@ export function useTetrisEngine() {
 
   const hardDrop = useCallback(() => {
     if (!isRunning || isGameOver || !piece) return
-    let nextY = piece.y
-    while (!collides(board, piece, 0, nextY - piece.y + 1)) {
-      nextY += 1
-    }
+    const nextY = getHardDropY(board, piece)
     lockAndContinue({ ...piece, y: nextY })
   }, [board, isGameOver, isRunning, lockAndContinue, piece])
 
@@ -135,6 +133,27 @@ export function useTetrisEngine() {
     [board, piece],
   )
 
+  const ghostCellIndices = useMemo(() => {
+    if (!piece) {
+      return [] as number[]
+    }
+    const targetY = getHardDropY(board, piece)
+    const ghostCells: number[] = []
+    piece.shape.forEach((row, py) => {
+      row.forEach((cell, px) => {
+        if (!cell) {
+          return
+        }
+        const x = piece.x + px
+        const y = targetY + py
+        if (x >= 0 && x < board[0].length && y >= 0 && y < board.length) {
+          ghostCells.push(y * board[0].length + x)
+        }
+      })
+    })
+    return ghostCells
+  }, [board, piece])
+
   const controls = useMemo<TetrisControls>(
     () => ({
       moveHorizontally,
@@ -149,6 +168,7 @@ export function useTetrisEngine() {
 
   return {
     boardWithPiece,
+    ghostCellIndices,
     nextPiece,
     score: scoring.score,
     lines: scoring.lines,

@@ -89,6 +89,14 @@ export function scoreForLines(lines: number): number {
   return 0
 }
 
+export function getHardDropY(board: Board, piece: Piece): number {
+  let nextY = piece.y
+  while (!collides(board, piece, 0, nextY - piece.y + 1)) {
+    nextY += 1
+  }
+  return nextY
+}
+
 export function boardWithActivePiece(board: Board, piece: Piece | null): Board {
   const boardCopy = board.map((row) => [...row])
   if (!piece) {
