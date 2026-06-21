@@ -59,6 +59,7 @@ export function useTetrisEngine() {
     (activeBoard: Board) => {
       const pieceToSpawn = nextPieceRef.current ?? randomPiece()
       if (collides(activeBoard, pieceToSpawn)) {
+        scoring.finalizeRun()
         setPiece(null)
         setIsGameOver(true)
         setIsRunning(false)
@@ -67,7 +68,7 @@ export function useTetrisEngine() {
       setPiece(pieceToSpawn)
       setQueuedPiece(randomPiece())
     },
-    [setQueuedPiece],
+    [scoring, setQueuedPiece],
   )
 
   const lockAndContinue = useCallback(

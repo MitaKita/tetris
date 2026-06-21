@@ -46,6 +46,10 @@ export function useTetrisScoring() {
     }
   }, [])
 
+  const finalizeRun = useCallback(() => {
+    dispatch({ type: "finalize" })
+  }, [])
+
   const reset = useCallback(() => {
     dispatch({ type: "reset" })
   }, [])
@@ -55,6 +59,7 @@ export function useTetrisScoring() {
     lines: state.lines,
     highScore: state.highScore,
     addLinesAndScore,
+    finalizeRun,
     reset,
   }
 }
@@ -74,6 +79,9 @@ type ScoringAction =
       type: "reset"
     }
   | {
+      type: "finalize"
+    }
+  | {
       type: "hydrate"
       highScore: number
     }
@@ -90,9 +98,13 @@ function scoringReducer(
         ...state,
         score: nextScore,
         lines: state.lines + action.linesCleared,
-        highScore: Math.max(state.highScore, nextScore),
       }
     }
+    case "finalize":
+      return {
+        ...state,
+        highScore: Math.max(state.highScore, state.score),
+      }
     case "reset":
       return {
         ...state,

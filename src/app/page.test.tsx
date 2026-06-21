@@ -9,7 +9,7 @@ describe("Home page", () => {
     expect(screen.getByLabelText(/tetris-board/i)).toBeInTheDocument()
     expect(screen.getByText(/^score$/i)).toBeInTheDocument()
     expect(screen.getByText(/^lines$/i)).toBeInTheDocument()
-    expect(screen.queryByText(/^high score$/i)).not.toBeInTheDocument()
+    expect(screen.getByText(/^high score$/i)).toBeInTheDocument()
     expect(screen.getByText(/next/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/next-piece-preview/i)).toBeInTheDocument()
     expect(screen.getByRole("button", { name: /restart/i })).toBeInTheDocument()

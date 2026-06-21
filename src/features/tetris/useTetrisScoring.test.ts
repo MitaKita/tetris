@@ -24,7 +24,7 @@ describe("useTetrisScoring", () => {
 
     expect(result.current.lines).toBe(1)
     expect(result.current.score).toBe(100)
-    expect(result.current.highScore).toBe(100)
+    expect(result.current.highScore).toBe(0)
   })
 
   it("adds lines and score for a tetris clear", () => {
@@ -36,7 +36,7 @@ describe("useTetrisScoring", () => {
 
     expect(result.current.lines).toBe(4)
     expect(result.current.score).toBe(800)
-    expect(result.current.highScore).toBe(800)
+    expect(result.current.highScore).toBe(0)
   })
 
   it("accumulates score and lines across multiple clears", () => {
@@ -50,7 +50,7 @@ describe("useTetrisScoring", () => {
 
     expect(result.current.lines).toBe(6)
     expect(result.current.score).toBe(900)
-    expect(result.current.highScore).toBe(900)
+    expect(result.current.highScore).toBe(0)
   })
 
   it("ignores non-positive line clear values", () => {
@@ -66,24 +66,33 @@ describe("useTetrisScoring", () => {
     expect(result.current.highScore).toBe(0)
   })
 
-  it("resets score and lines to zero without lowering the high score", async () => {
+  it("commits high score only when a run is finalized", () => {
     const { result } = renderHook(() => useTetrisScoring())
 
     act(() => {
       result.current.addLinesAndScore(2)
     })
 
-    await waitFor(() => {
-      expect(result.current.highScore).toBe(300)
-    })
+    expect(result.current.highScore).toBe(0)
 
     act(() => {
+      result.current.finalizeRun()
+    })
+
+    expect(result.current.highScore).toBe(300)
+  })
+
+  it("resets score and lines to zero without lowering the high score", () => {
+    const { result } = renderHook(() => useTetrisScoring())
+
+    act(() => {
+      result.current.addLinesAndScore(2)
+      result.current.finalizeRun()
       result.current.reset()
     })
 
     expect(result.current.lines).toBe(0)
     expect(result.current.score).toBe(0)
-
     expect(result.current.highScore).toBe(300)
   })
 
