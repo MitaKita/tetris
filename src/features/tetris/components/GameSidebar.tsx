@@ -1,6 +1,11 @@
+import { COLOR_BY_VALUE } from "../constants"
+import type { Piece } from "../types"
+
 type GameSidebarProps = {
   score: number
   lines: number
+  highScore: number
+  nextPiece: Piece | null
   isRunning: boolean
   isGameOver: boolean
   onTogglePause: () => void
@@ -15,6 +20,8 @@ type GameSidebarProps = {
 export function GameSidebar({
   score,
   lines,
+  highScore,
+  nextPiece,
   isRunning,
   isGameOver,
   onTogglePause,
@@ -27,7 +34,7 @@ export function GameSidebar({
 }: GameSidebarProps) {
   return (
     <aside className="w-full max-w-sm space-y-4 rounded-xl border border-slate-700 bg-slate-900 p-4 shadow-xl">
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-3 gap-3">
         <div className="rounded-md bg-slate-800 p-3">
           <p className="text-sm text-slate-300">Score</p>
           <p className="text-xl font-semibold">{score}</p>
@@ -35,6 +42,29 @@ export function GameSidebar({
         <div className="rounded-md bg-slate-800 p-3">
           <p className="text-sm text-slate-300">Lines</p>
           <p className="text-xl font-semibold">{lines}</p>
+        </div>
+        <div className="rounded-md bg-slate-800 p-3">
+          <p className="text-sm text-slate-300">High score</p>
+          <p className="text-xl font-semibold">{highScore}</p>
+        </div>
+      </div>
+
+      <div className="rounded-md bg-slate-800 p-3">
+        <p className="text-sm text-slate-300">Next</p>
+        <div
+          aria-label="next-piece-preview"
+          className="mt-3 inline-grid gap-1 rounded-md bg-slate-950 p-2"
+          style={{
+            gridTemplateColumns: `repeat(${nextPiece?.shape[0]?.length ?? 4}, minmax(0, 1.25rem))`,
+          }}
+        >
+          {(nextPiece?.shape ?? Array.from({ length: 4 }, () => Array(4).fill(0))).flat().map((cell, index) => (
+            <div
+              key={index}
+              className="h-5 w-5 rounded-sm border border-slate-900/60"
+              style={{ backgroundColor: COLOR_BY_VALUE[cell ? nextPiece?.color ?? 0 : 0] }}
+            />
+          ))}
         </div>
       </div>
 

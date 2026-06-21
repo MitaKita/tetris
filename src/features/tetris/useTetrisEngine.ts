@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { TICK_MS } from "./constants"
 import {
   boardWithActivePiece,
@@ -24,44 +24,61 @@ export type TetrisControls = {
 export function useTetrisEngine() {
   const [board, setBoard] = useState<Board>(createEmptyBoard)
   const [piece, setPiece] = useState<Piece | null>(null)
+  const [nextPiece, setNextPiece] = useState<Piece | null>(null)
+  const nextPieceRef = useRef<Piece | null>(null)
   const [isRunning, setIsRunning] = useState(true)
   const [isGameOver, setIsGameOver] = useState(false)
   const scoring = useTetrisScoring()
 
+  const setQueuedPiece = useCallback((queuedPiece: Piece | null) => {
+    nextPieceRef.current = queuedPiece
+    setNextPiece(queuedPiece)
+  }, [])
+
+  const initializePieces = useCallback(() => {
+    const firstPiece = randomPiece()
+    const queuedPiece = randomPiece()
+    setPiece(firstPiece)
+    setQueuedPiece(queuedPiece)
+  }, [setQueuedPiece])
+
   useEffect(() => {
     // Create the first random piece only on the client to avoid SSR hydration mismatch.
-    setPiece(randomPiece())
-  }, [])
+    initializePieces()
+  }, [initializePieces])
 
   const restart = useCallback(() => {
     setBoard(createEmptyBoard())
-    setPiece(randomPiece())
+    initializePieces()
     scoring.reset()
     setIsGameOver(false)
     setIsRunning(true)
-  }, [scoring])
+  }, [initializePieces, scoring])
 
-  const spawnNextPiece = useCallback((activeBoard: Board) => {
-    const nextPiece = randomPiece()
-    if (collides(activeBoard, nextPiece)) {
-      setIsGameOver(true)
-      setIsRunning(false)
-      return
-    }
-    setPiece(nextPiece)
-  }, [])
+  const spawnNextPiece = useCallback(
+    (activeBoard: Board) => {
+      const pieceToSpawn = nextPieceRef.current ?? randomPiece()
+      if (collides(activeBoard, pieceToSpawn)) {
+        setPiece(null)
+        setIsGameOver(true)
+        setIsRunning(false)
+        return
+      }
+      setPiece(pieceToSpawn)
+      setQueuedPiece(randomPiece())
+    },
+    [setQueuedPiece],
+  )
 
   const lockAndContinue = useCallback(
     (pieceToLock: Piece) => {
-      setBoard((prevBoard) => {
-        const merged = mergePiece(prevBoard, pieceToLock)
-        const { nextBoard, linesCleared } = clearLines(merged)
-        scoring.addLinesAndScore(linesCleared)
-        spawnNextPiece(nextBoard)
-        return nextBoard
-      })
+      const merged = mergePiece(board, pieceToLock)
+      const { nextBoard, linesCleared } = clearLines(merged)
+      setBoard(nextBoard)
+      scoring.addLinesAndScore(linesCleared)
+      spawnNextPiece(nextBoard)
     },
-    [spawnNextPiece, scoring],
+    [board, spawnNextPiece, scoring],
   )
 
   const moveHorizontally = useCallback(
@@ -131,8 +148,10 @@ export function useTetrisEngine() {
 
   return {
     boardWithPiece,
+    nextPiece,
     score: scoring.score,
     lines: scoring.lines,
+    highScore: scoring.highScore,
     isRunning,
     isGameOver,
     controls,

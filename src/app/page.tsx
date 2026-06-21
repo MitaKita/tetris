@@ -5,7 +5,8 @@ import { TetrisBoard } from "../features/tetris/components/TetrisBoard"
 import { useTetrisGame } from "../features/tetris/useTetrisGame"
 
 export default function Home() {
-  const { boardWithPiece, score, lines, isRunning, isGameOver, controls, mobileControls } = useTetrisGame()
+  const { boardWithPiece, nextPiece, score, lines, highScore, isRunning, isGameOver, controls, mobileControls } =
+    useTetrisGame()
 
   return (
     <div className="min-h-screen bg-slate-950 px-4 py-8 text-slate-100">
@@ -14,6 +15,8 @@ export default function Home() {
         <GameSidebar
           score={score}
           lines={lines}
+          highScore={highScore}
+          nextPiece={nextPiece}
           isRunning={isRunning}
           isGameOver={isGameOver}
           onTogglePause={controls.togglePause}

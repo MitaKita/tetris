@@ -7,8 +7,11 @@ describe("Home page", () => {
 
     expect(screen.getByRole("heading", { name: /simple tetris/i })).toBeInTheDocument()
     expect(screen.getByLabelText(/tetris-board/i)).toBeInTheDocument()
-    expect(screen.getByText(/score/i)).toBeInTheDocument()
-    expect(screen.getByText(/lines/i)).toBeInTheDocument()
+    expect(screen.getByText(/^score$/i)).toBeInTheDocument()
+    expect(screen.getByText(/^lines$/i)).toBeInTheDocument()
+    expect(screen.getByText(/^high score$/i)).toBeInTheDocument()
+    expect(screen.getByText(/next/i)).toBeInTheDocument()
+    expect(screen.getByLabelText(/next-piece-preview/i)).toBeInTheDocument()
     expect(screen.getByRole("button", { name: /restart/i })).toBeInTheDocument()
 
     const cells = screen.getByLabelText(/tetris-board/i).querySelectorAll("div")
