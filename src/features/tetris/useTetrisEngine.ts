@@ -27,7 +27,8 @@ export function useTetrisEngine() {
   const [piece, setPiece] = useState<Piece | null>(null)
   const [nextPiece, setNextPiece] = useState<Piece | null>(null)
   const nextPieceRef = useRef<Piece | null>(null)
-  const [isRunning, setIsRunning] = useState(true)
+  const [isRunning, setIsRunning] = useState(false)
+  const [hasStarted, setHasStarted] = useState(false)
   const [isGameOver, setIsGameOver] = useState(false)
   const scoring = useTetrisScoring()
 
@@ -52,6 +53,7 @@ export function useTetrisEngine() {
     setBoard(createEmptyBoard())
     initializePieces()
     scoring.reset()
+    setHasStarted(true)
     setIsGameOver(false)
     setIsRunning(true)
   }, [initializePieces, scoring])
@@ -117,7 +119,13 @@ export function useTetrisEngine() {
   }, [board, isGameOver, isRunning, lockAndContinue, piece])
 
   const togglePause = useCallback(() => {
-    setIsRunning((prev) => !prev)
+    setIsRunning((prev) => {
+      const next = !prev
+      if (next) {
+        setHasStarted(true)
+      }
+      return next
+    })
   }, [])
 
   useEffect(() => {
@@ -173,6 +181,7 @@ export function useTetrisEngine() {
     score: scoring.score,
     lines: scoring.lines,
     highScore: scoring.highScore,
+    hasStarted,
     isRunning,
     isGameOver,
     controls,
