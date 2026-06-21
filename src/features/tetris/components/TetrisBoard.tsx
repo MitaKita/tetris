@@ -10,9 +10,9 @@ export function TetrisBoard({ board, ghostCellIndices }: TetrisBoardProps) {
   const ghostSet = new Set(ghostCellIndices)
 
   return (
-    <section className="w-full max-w-[320px] rounded-xl border border-slate-700 bg-slate-900 p-3 shadow-2xl">
+    <section className="w-full max-w-[320px] rounded-xl border border-slate-500/40 bg-slate-900/45 p-3 shadow-2xl backdrop-blur-sm">
       <h1 className="mb-3 text-center text-2xl font-bold tracking-wide">Simple Tetris</h1>
-      <div aria-label="tetris-board" className="grid grid-cols-10 gap-[2px] rounded-md bg-slate-800 p-[2px]">
+      <div aria-label="tetris-board" className="grid grid-cols-10 gap-[2px] rounded-md bg-slate-800/70 p-[2px]">
         {board.flat().map((cell, index) => {
           const isGhostCell = cell === 0 && ghostSet.has(index)
           return (
