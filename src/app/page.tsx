@@ -5,7 +5,7 @@ import { TetrisBoard } from "../features/tetris/components/TetrisBoard"
 import { useTetrisGame } from "../features/tetris/useTetrisGame"
 
 export default function Home() {
-  const { boardWithPiece, score, lines, isRunning, isGameOver, controls } = useTetrisGame()
+  const { boardWithPiece, score, lines, isRunning, isGameOver, controls, mobileControls } = useTetrisGame()
 
   return (
     <div className="min-h-screen bg-slate-950 px-4 py-8 text-slate-100">
@@ -18,11 +18,11 @@ export default function Home() {
           isGameOver={isGameOver}
           onTogglePause={controls.togglePause}
           onRestart={controls.restart}
-          onMoveLeft={() => controls.moveHorizontally(-1)}
-          onMoveRight={() => controls.moveHorizontally(1)}
-          onRotate={controls.rotate}
-          onDropOne={controls.dropOneRow}
-          onHardDrop={controls.hardDrop}
+          onMoveLeft={mobileControls.moveLeft}
+          onMoveRight={mobileControls.moveRight}
+          onRotate={mobileControls.rotate}
+          onDropOne={mobileControls.dropOne}
+          onHardDrop={mobileControls.hardDrop}
         />
       </main>
     </div>
