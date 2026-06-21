@@ -1,9 +1,17 @@
 import { useEffect } from "react"
 import type { TetrisControls } from "./useTetrisEngine"
 
-export function useTetrisKeyboardControls(controls: TetrisControls) {
+export function useTetrisKeyboardControls(
+  controls: TetrisControls,
+  isRunning: boolean,
+  isGameOver: boolean,
+) {
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
+      if (isGameOver) {
+        return
+      }
+
       if (event.key === "ArrowLeft") {
         event.preventDefault()
         controls.moveHorizontally(-1)
@@ -19,10 +27,16 @@ export function useTetrisKeyboardControls(controls: TetrisControls) {
       } else if (event.key === " " || event.code === "Space") {
         event.preventDefault()
         controls.hardDrop()
+      } else if (event.code === "KeyP" && isRunning) {
+        event.preventDefault()
+        controls.togglePause()
+      } else if (event.code === "KeyR" && !isRunning) {
+        event.preventDefault()
+        controls.togglePause()
       }
     }
 
     window.addEventListener("keydown", onKeyDown)
     return () => window.removeEventListener("keydown", onKeyDown)
-  }, [controls])
+  }, [controls, isGameOver, isRunning])
 }

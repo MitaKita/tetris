@@ -4,7 +4,7 @@ import { useTetrisMobileControls } from "./useTetrisMobileControls"
 
 export function useTetrisGame() {
   const game = useTetrisEngine()
-  useTetrisKeyboardControls(game.controls)
+  useTetrisKeyboardControls(game.controls, game.isRunning, game.isGameOver)
   const mobileControls = useTetrisMobileControls(game.controls)
   return {
     ...game,

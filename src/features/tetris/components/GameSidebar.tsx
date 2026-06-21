@@ -94,6 +94,8 @@ export function GameSidebar({
         <p>Up: Rotate</p>
         <p>Down: Soft drop</p>
         <p>Space: Hard drop</p>
+        <p>P: Pause</p>
+        <p>R: Resume</p>
       </div>
 
       <div className="grid grid-cols-3 gap-2 text-sm md:hidden">
