@@ -1,6 +1,6 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-Check it out here: [`https://tetris-git-main-marita-kontios-projects.vercel.app/`](https://tetris-git-main-marita-kontios-projects.vercel.app/)
+Check out the app here: [`https://tetris-git-main-marita-kontios-projects.vercel.app/`](https://tetris-git-main-marita-kontios-projects.vercel.app/)
 
 ## Getting Started
 
