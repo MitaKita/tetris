@@ -12,6 +12,7 @@ describe("Home page", () => {
     expect(screen.getByText(/^high score$/i)).toBeInTheDocument()
     expect(screen.getByText(/next/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/next-piece-preview/i)).toBeInTheDocument()
+    expect(screen.getByRole("button", { name: /start game/i })).toBeInTheDocument()
     expect(screen.getByRole("button", { name: /restart/i })).toBeInTheDocument()
 
     const cells = screen.getByLabelText(/tetris-board/i).querySelectorAll("div")

@@ -25,7 +25,12 @@ export default function Home() {
     <div className="relative isolate min-h-screen overflow-hidden bg-slate-950 px-4 pb-40 pt-6 text-slate-100 md:py-8">
       <TetrisBackdrop />
       <main className="relative z-10 mx-auto flex w-full max-w-4xl flex-col items-center gap-6 md:flex-row md:items-start md:justify-center">
-        <TetrisBoard board={boardWithPiece} ghostCellIndices={ghostCellIndices} />
+        <TetrisBoard
+          board={boardWithPiece}
+          ghostCellIndices={ghostCellIndices}
+          hasStarted={hasStarted}
+          onStart={controls.togglePause}
+        />
         <GameSidebar
           score={score}
           lines={lines}
