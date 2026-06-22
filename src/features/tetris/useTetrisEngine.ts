@@ -13,6 +13,10 @@ import {
 import type { Board, Piece } from "./types"
 import { useTetrisScoring } from "./useTetrisScoring"
 
+function isBoardEmpty(board: Board): boolean {
+  return board.every((row) => row.every((cell) => cell === 0))
+}
+
 export type TetrisControls = {
   moveHorizontally: (dx: number) => void
   dropOneRow: () => void
@@ -79,7 +83,8 @@ export function useTetrisEngine() {
       const merged = mergePiece(board, pieceToLock)
       const { nextBoard, linesCleared } = clearLines(merged)
       setBoard(nextBoard)
-      scoring.addLinesAndScore(linesCleared)
+      const isAllClear = linesCleared > 0 && isBoardEmpty(nextBoard)
+      scoring.addLinesAndScore(linesCleared, isAllClear)
       spawnNextPiece(nextBoard)
     },
     [board, spawnNextPiece, scoring],

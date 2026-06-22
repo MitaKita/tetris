@@ -105,4 +105,45 @@ describe("useTetrisScoring", () => {
       expect(result.current.highScore).toBe(1234)
     })
   })
+
+  it("applies all-clear bonus when board is emptied", () => {
+    const { result } = renderHook(() => useTetrisScoring())
+
+    act(() => {
+      result.current.addLinesAndScore(4, true)
+    })
+
+    expect(result.current.lines).toBe(4)
+    expect(result.current.score).toBe(800 + 8000) // Regular score + all-clear bonus
+  })
+
+  it("applies correct all-clear bonus for 1 line", () => {
+    const { result } = renderHook(() => useTetrisScoring())
+
+    act(() => {
+      result.current.addLinesAndScore(1, true)
+    })
+
+    expect(result.current.score).toBe(100 + 1000)
+  })
+
+  it("applies correct all-clear bonus for 2 lines", () => {
+    const { result } = renderHook(() => useTetrisScoring())
+
+    act(() => {
+      result.current.addLinesAndScore(2, true)
+    })
+
+    expect(result.current.score).toBe(300 + 2000)
+  })
+
+  it("applies correct all-clear bonus for 3 lines", () => {
+    const { result } = renderHook(() => useTetrisScoring())
+
+    act(() => {
+      result.current.addLinesAndScore(3, true)
+    })
+
+    expect(result.current.score).toBe(500 + 4000)
+  })
 })
