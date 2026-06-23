@@ -13,7 +13,7 @@ export function TetrisBoard({ board, ghostCellIndices, hasStarted, onStart }: Te
 
   return (
     <section className="relative w-full max-w-[320px] rounded-xl border border-slate-500/40 bg-slate-900/45 p-3 shadow-2xl backdrop-blur-sm">
-      <h1 className="mb-3 text-center text-2xl font-bold tracking-wide">Simple Tetris</h1>
+      <h1 className="mb-3 text-center text-2xl font-bold tracking-wide">Tetris</h1>
       <div aria-label="tetris-board" className="grid grid-cols-10 gap-[2px] rounded-md bg-slate-800/70 p-[2px]">
         {board.flat().map((cell, index) => {
           const isGhostCell = cell === 0 && ghostSet.has(index)
