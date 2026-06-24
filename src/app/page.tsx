@@ -31,7 +31,7 @@ export default function Home() {
           hasStarted={hasStarted}
           onStart={controls.togglePause}
         />
-        <GameSidebar
+        {hasStarted && <GameSidebar
           score={score}
           lines={lines}
           highScore={highScore}
@@ -46,7 +46,7 @@ export default function Home() {
           onRotate={mobileControls.rotate}
           onDropOne={mobileControls.dropOne}
           onHardDrop={mobileControls.hardDrop}
-        />
+        />}
       </main>
     </div>
   )

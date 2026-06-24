@@ -10,6 +10,10 @@ type TetrisBoardProps = {
 
 export function TetrisBoard({ board, ghostCellIndices, hasStarted, onStart }: TetrisBoardProps) {
   const ghostSet = new Set(ghostCellIndices)
+  const ghostCellStyle = {
+    backgroundColor: "rgba(34, 211, 238, 0.14)",
+    boxShadow: "inset 0 0 0 1px rgba(165, 243, 252, 0.3), 0 0 8px rgba(34, 211, 238, 0.08)",
+  }
 
   return (
     <section className="relative w-full max-w-[320px] rounded-xl border border-slate-500/40 bg-slate-900/45 p-3 shadow-2xl backdrop-blur-sm">
@@ -22,8 +26,8 @@ export function TetrisBoard({ board, ghostCellIndices, hasStarted, onStart }: Te
               key={index}
               className="h-6 w-6 rounded-sm border border-slate-900/60"
               style={{
-                backgroundColor: isGhostCell ? "transparent" : COLOR_BY_VALUE[cell],
-                boxShadow: isGhostCell ? "inset 0 0 0 1px rgba(226, 232, 240, 0.1)" : "none",
+                backgroundColor: isGhostCell ? ghostCellStyle.backgroundColor : COLOR_BY_VALUE[cell],
+                boxShadow: isGhostCell ? ghostCellStyle.boxShadow : "none",
               }}
             />
           )
